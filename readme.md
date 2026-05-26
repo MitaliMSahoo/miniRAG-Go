@@ -334,36 +334,3 @@ air
 go build -o miniragserver ./main.go
 ./miniragserver
 ```
-
----
-
-## 🚨 Troubleshooting
-
-### "Connection refused: weaviate"
-- Ensure Weaviate is running: `curl http://localhost:8080/v1/.well-known/live`
-- In Docker, ensure `weaviate` service is healthy: `docker ps | grep weaviate`
-
-### "GEMINI_API_KEY not found"
-- Check `.env` file exists in project root
-- Verify the key is set: `echo $GEMINI_API_KEY`
-- Restart the server after updating `.env`
-
-### "Model not found" error
-- Verify the model name is valid (e.g., `gemini-2.0-flash`)
-- Check Google AI Studio for available models
-- Update `GEMINI_LLM_MODEL` in `.env`
-
-### Weaviate collection not created
-- Happens automatically on first `/adddocument` call
-- Check collection: `curl http://localhost:8080/v1/schema`
-
----
-
-## 📊 Performance
-
-- **Embedding:** ~0.5-2 seconds per document (via Gemini API)
-- **Search:** <100ms for similarity search
-- **LLM Response:** 1-5 seconds depending on answer length
-- **Storage:** ~1KB per document + embeddings (~1.5KB)
-
----
