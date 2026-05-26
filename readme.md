@@ -234,43 +234,6 @@ Open http://localhost:8080 in your browser to use the interactive UI.
 
 ---
 
-## 🧪 Testing
-
-### Test the Full RAG Pipeline
-
-**1. Add test documents:**
-```bash
-curl -X POST http://localhost:8080/adddocument \
-  -H "Content-Type: application/json" \
-  -d '{
-    "documents": [
-      {"text": "Go is a compiled language created by Google in 2009"},
-      {"text": "Python is an interpreted language known for simplicity"},
-      {"text": "Rust is a systems language focused on memory safety"}
-    ]
-  }'
-```
-
-**2. Query about Go:**
-```bash
-curl -X POST http://localhost:8080/queryprompt \
-  -H "Content-Type: application/json" \
-  -d '{"content": "When was Go created?"}'
-```
-
-**Expected:** The server retrieves the Go document and generates: *"Go was created by Google in 2009"*
-
-**3. Query about something else:**
-```bash
-curl -X POST http://localhost:8080/queryprompt \
-  -H "Content-Type: application/json" \
-  -d '{"content": "What language focuses on memory safety?"}'
-```
-
-**Expected:** The server retrieves the Rust document and responds about memory safety.
-
----
-
 ## 🔧 Weaviate Management
 
 ### Verify Weaviate is Running
