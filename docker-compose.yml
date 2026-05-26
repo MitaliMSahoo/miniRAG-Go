@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  # Weaviate Vector Database
+  weaviate:
+    image: semitechnologies/weaviate:latest
+    ports:
+      - "8081:8080"
+    environment:
+      QUERY_DEFAULTS_LIMIT: 25
+      AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
+      PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
+      DEFAULT_VECTORIZER_MODULE: 'none'
+    volumes:
+      - weaviate_data:/var/lib/weaviate
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/v1/.well-known/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - minirag-network
+
+  # miniRAG Go Application
+  minirag:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      SERVER_PORT: "8080"
+      SERVER_IP: "0.0.0.0"
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+      GEMINI_EMBEDDING_MODEL: "models/embedding-001"
+      GEMINI_LLM_MODEL: "gemini-2.0-flash"
+      WEAVIATE_HOST: "weaviate"
+      WEAVIATE_PORT: "8080"
+      WEAVIATE_SCHEME: "http"
+      WEAVIATE_COLLECTION: "Documents"
+    depends_on:
+      weaviate:
+        condition: service_healthy
+    networks:
+      - minirag-network
+    restart: unless-stopped
+
+  # Optional: Nginx reverse proxy for easier access
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - minirag
+    networks:
+      - minirag-network
+    restart: unless-stopped
+
+volumes:
+  weaviate_data:
+
+networks:
+  minirag-network:
+    driver: bridge
