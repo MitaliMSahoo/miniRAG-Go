@@ -170,61 +170,16 @@ Server starting on 8080
 3. Copy the key to your `.env` file
 
 ---
-
 ## 📡 API Endpoints
 
-### 1. Add Documents
-**Endpoint:** `POST /adddocument`
+The server exposes 2 core APIs:
 
-**Request:**
-```json
-{
-  "documents": [
-    {"text": "Go is a compiled language"},
-    {"text": "Go has built-in concurrency with goroutines"}
-  ]
-}
+1. **Add Documents** (`POST /adddocument`)
+   Accepts a raw document upload or text payload, segments the content into structural chunks, generates vector embeddings, and stores them in the database.
+
+2. **Query with RAG** (`POST /queryprompt`)
+   Accepts a user prompt, retrieves contextually relevant document chunks via semantic search, and returns an AI-generated answer using the LLM.
 ```
-
-**Response:**
-```json
-{"added": 2, "message": "2 document(s) added"}
-```
-
-**Example:**
-```bash
-curl -X POST http://localhost:8080/adddocument \
-  -H "Content-Type: application/json" \
-  -d '{
-    "documents": [
-      {"text": "Go is a compiled language"},
-      {"text": "Go has built-in concurrency"}
-    ]
-  }'
-```
-
----
-
-### 2. Query with RAG
-**Endpoint:** `POST /queryprompt`
-
-**Request:**
-```json
-{"content": "What is Go?"}
-```
-
-**Response:**
-```json
-{"answer": "Go is a compiled, statically-typed programming language developed by Google..."}
-```
-
-**Example:**
-```bash
-curl -X POST http://localhost:8080/queryprompt \
-  -H "Content-Type: application/json" \
-  -d '{"content": "What is Go?"}'
-```
-
 ---
 
 ### 3. Web UI
