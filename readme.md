@@ -1,4 +1,4 @@
-# miniRAG Server - Go
+# miniRAG-Go
 
 A production-ready **Retrieval Augmented Generation (RAG)** server built in Go. It combines document embeddings, vector search, and large language models to answer questions based on your custom documents.
 
